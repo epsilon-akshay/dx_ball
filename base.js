@@ -2,12 +2,12 @@ var base = {
     x: 450,
     y: 800,
     color: 'blue',
-    width: 150,
+    width: 250,
     height: 20,
     movingLeft: false,
     movingRight: false
 }
-var SPEED = 5
+var SPEED = 7
 
 var drawBase = function(ctx) {
     ctx.save()

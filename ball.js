@@ -27,3 +27,14 @@ var moveBall = function(ctx, canvas) {
     ball.y = ball.y + ball.spdY
     drawBall(ctx)
 }
+
+var outOfBounds = function(intervalVar) {
+    if (ball.y == (canvas.height - 2 * ball.radius)) {
+        clearInterval(intervalVar)
+        ctx.save()
+        ctx.font = "50px Georgia";
+        lineitem = 'Game Over! click to restart'
+        ctx.fillText(lineitem, 800, 450);
+        ctx.restore()
+    }
+}

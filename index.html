@@ -9,11 +9,20 @@
     <script>
         var canvas = document.getElementById("ctx")
         var ctx = canvas.getContext("2d")
+        var intervalVar
+        var running = false
 
-        drawBall(ctx)
-        drawBase(ctx)
-        drawTiles(ctx)
+        canvas.onmousedown = function() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (running) {
 
+                clearInterval(intervalVar)
+                ball.x = 400
+                ball.y = 400
+                running = false
+            }
+            startGame()
+        }
         document.onkeydown = function(event) {
             if (event.keyCode == 37) {
                 base.movingLeft = true;
@@ -32,14 +41,55 @@
             }
         }
 
+        testCollisionWithBaseAndBall = function(base, ball) {
+            return ((base.x < ball.x + ball.radius) &&
+                (ball.x < base.x + base.width) &&
+                (base.y < ball.y + ball.radius) &&
+                (ball.y < base.y + base.height));
+        }
+
+        testCollisionWithTileAndBall = function(e, ball) {
+            return ((e.x < ball.x + ball.radius) &&
+                (ball.x < e.x + tile.width) &&
+                (e.y < ball.y + ball.radius) &&
+                (ball.y < e.y + tile.height));
+        }
+
+        var checkBaseBallCollition = function() {
+            if (testCollisionWithBaseAndBall(base, ball) == true) {
+                ball.spdY = -ball.spdY
+            }
+        }
+
+        var checkBallTileCollition = function() {
+            for (var i in tileList) {
+                if (testCollisionWithTileAndBall(tileList[i], ball) == true) {
+                    console.log("collided")
+                    ball.spdY = -ball.spdY
+                    tileList.splice(i, 1);
+                }
+            }
+        }
+
         var updatePosition = function() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             moveBase(ctx, canvas)
             drawTiles(ctx)
+            checkBaseBallCollition()
+            checkBallTileCollition()
             moveBall(ctx, canvas)
-        }
+            outOfBounds(intervalVar, ctx)
 
-        setInterval(updatePosition, 10)
+        }
+        var startGame = function() {
+            drawBall(ctx)
+            drawBase(ctx)
+            drawTiles(ctx)
+            running = true
+            initializeTiles()
+            intervalVar = setInterval(updatePosition, 7)
+        }
+        startGame()
     </script>
 </body>
 
